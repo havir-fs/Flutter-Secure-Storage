@@ -1,6 +1,6 @@
 # Sample secure storage implementation for flutter
 
-A sample Flutter application that shows the use of flutter_secure_storage library (that uses keysotre for Android and keychain for IOS).
+A sample Flutter application that shows the use of flutter_secure_storage library as a solution for store and encrypt data in Flutter. In this plugin Keychain is used for iOS and AES encryption is used for Android. AES secret key is encrypted with RSA and RSA key is stored in KeyStore.
 
 
 ## Notes:
