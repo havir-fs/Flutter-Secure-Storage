@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 const String SECURE_NOTE_KEY = "SECURE_NOTE_KEY";
 
@@ -15,7 +16,9 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(title: 'Flutter Secure Storage'),
+      home: MyHomePage(
+        title: "Flutter Secure Storage",
+      ),
     );
   }
 }
@@ -30,45 +33,50 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  TextEditingController secureNoteController;
+  FlutterSecureStorage storage;
+
+  String _encryptionTime;
+  String _decryptionTime;
+
+  String _sampleToken =
+      "bqLSrt16%sE&P#nDi7ij4mjMRvUy9I9p0DtQn7crgf^BV21kJ6mu6NwE7ZESdOBDOdt1w%q6kAYsAHymtkXoDRr!zz0OA7#vxqOx";
 
   @override
   void initState() {
     super.initState();
-    secureNoteController = TextEditingController();
+    storage = FlutterSecureStorage();
   }
 
   @override
   void dispose() {
-    secureNoteController.dispose();
     super.dispose();
+    storage = null;
   }
 
-  void _saveSecureNote() async {
+  void _encrypt() async {
+    Stopwatch stopwatch = new Stopwatch()..start();
+
     //write to the secure storage
-    final storage = FlutterSecureStorage();
-    await storage.write(key: SECURE_NOTE_KEY, value: secureNoteController.text);
+    await storage.write(key: SECURE_NOTE_KEY, value: _sampleToken);
+
+    print('****** encrypting and saving executed in ${stopwatch.elapsed}');
+    print(
+        '****** encrypting and saving executed in (mili) ${stopwatch.elapsedMilliseconds}');
+
+    Fluttertoast.showToast(msg: "Token succesfully stored and encrypted!");
+  }
+
+  void _decrypt() async {
+    Stopwatch stopwatch2 = new Stopwatch()..start();
 
     //read from the secure storage
     String value = await storage.read(key: SECURE_NOTE_KEY);
 
-    return showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text("Alert"),
-          content: Text("\"$value\" securely saved!"),
-          actions: <Widget>[
-            FlatButton(
-              child: Text("OK"),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            )
-          ],
-        );
-      },
-    );
+    print('&&&&&&&& decrypting and reading executed in ${stopwatch2.elapsed}');
+    print(
+        '&&&&&&&& decrypting and reading executed in ${stopwatch2.elapsedMilliseconds}');
+
+    Fluttertoast.showToast(msg: "Decrypted Token is:\n$value");
   }
 
   @override
@@ -82,23 +90,33 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Padding(
-              padding: const EdgeInsets.only(left: 64, right: 64),
-              child: TextField(
-                decoration:
-                    InputDecoration(hintText: 'Write down your secure note'),
-                controller: secureNoteController,
-              ),
+                padding: EdgeInsets.all(10),
+                child: SelectableText("Token:\n\n$_sampleToken")),
+            SizedBox(
+              height: 32,
             ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                RaisedButton(
+                  child: Text("Encrypt"),
+                  onPressed: () {
+                    _encrypt();
+                  },
+                ),
+                SizedBox(
+                  width: 32,
+                ),
+                RaisedButton(
+                  child: Text("Decrypt"),
+                  onPressed: () {
+                    _decrypt();
+                  },
+                ),
+              ],
+            )
           ],
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          if (secureNoteController.text.trim() != "" &&
-              secureNoteController.text != null) _saveSecureNote();
-        },
-        tooltip: 'Save',
-        child: Icon(Icons.save),
       ),
     );
   }
