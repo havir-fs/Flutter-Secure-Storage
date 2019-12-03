@@ -1,16 +1,28 @@
-# sample_flutter_secure_storage
+# Secure Storage sample in flutter
 
 A sample Flutter application that shows the use of flutter_secure_storage library (that uses keysotre for Android and keychain for IOS).
 
-## Getting Started
 
-This project is a starting point for a Flutter application.
+## Notes:
 
-A few resources to get you started if this is your first Flutter project:
+ - There is a limitation of using KeyStore provider in Android. KeyStore was introduced in Android 4.3 (API level 18). So For using this feature the API level must be 18 (Android 4.3).
+ 
+ - By default Android backups data on Google Drive. It can cause exception java.security.InvalidKeyException:Failed to unwrap key. For avoiding this error we could disable backup for this file(FlutterSecureStorage.xml). For do that you need firstly create an XML file called my_backup_rules.xml in the below directory with following content:
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+>-root-of-project-/android/app/src/main/res/xml/
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<full-backup-content>
+    <exclude domain="sharedpref" path="FlutterSecureStorage"/>
+</full-backup-content>
+```
+
+
+Then in AndroidManifest.xml, add the android:fullBackupContent attribute to the <application> element. This attribute points to an XML file that contains backup rules. For example:
+
+```xml
+<application ...
+    android:fullBackupContent="@xml/my_backup_rules">
+</application>
+```
