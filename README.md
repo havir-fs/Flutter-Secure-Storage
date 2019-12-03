@@ -1,4 +1,4 @@
-# Secure Storage sample in flutter
+# Sample secure storage implementation for flutter
 
 A sample Flutter application that shows the use of flutter_secure_storage library (that uses keysotre for Android and keychain for IOS).
 
