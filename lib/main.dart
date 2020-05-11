@@ -54,27 +54,25 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void _encrypt() async {
-    Stopwatch stopwatch = new Stopwatch()..start();
+    var stopwatch = new Stopwatch()..start();
 
     //write to the secure storage
     await storage.write(key: SECURE_NOTE_KEY, value: _sampleToken);
 
-    print('****** encrypting and saving executed in ${stopwatch.elapsed}');
-    print(
-        '****** encrypting and saving executed in (mili) ${stopwatch.elapsedMilliseconds}');
+    print('Encrypting and saving executed in ${stopwatch.elapsed}');
+    print('Encrypting and saving executed in (mili) ${stopwatch.elapsedMilliseconds}');
 
     Fluttertoast.showToast(msg: "Token succesfully stored and encrypted!");
   }
 
   void _decrypt() async {
-    Stopwatch stopwatch2 = new Stopwatch()..start();
+    var stopwatch = new Stopwatch()..start();
 
     //read from the secure storage
     String value = await storage.read(key: SECURE_NOTE_KEY);
 
-    print('&&&&&&&& decrypting and reading executed in ${stopwatch2.elapsed}');
-    print(
-        '&&&&&&&& decrypting and reading executed in ${stopwatch2.elapsedMilliseconds}');
+    print('Decrypting and reading executed in ${stopwatch.elapsed}');
+    print('Decrypting and reading executed in ${stopwatch.elapsedMilliseconds}');
 
     Fluttertoast.showToast(msg: "Decrypted Token is:\n$value");
   }
